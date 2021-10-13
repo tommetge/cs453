@@ -34,7 +34,9 @@ public:
     // form - if they are homographs.
     bool compare(CanonicalPath &other)
     {
-        return canonicalForm().compare(other.canonicalForm()) == 0;
+        std::string left = canonicalForm();
+        std::string right = other.canonicalForm();
+        return left.compare(right) == 0;
     }
 
 }; // class CanonicalPath

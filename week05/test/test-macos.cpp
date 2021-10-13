@@ -1,4 +1,6 @@
 #include "include/catch.hpp"
+#include "canonical_path_macos.hpp"
+#include "canonical_path_macos_ci.hpp"
 
 /* Two major filesystems to consider:
  *   1. HFS (legacy)
@@ -33,7 +35,62 @@
  * covered by the POSIX tests.
  */
 
-TEST_CASE("resource forks are resolved correctly", "[HFS]")
-{
+using namespace std;
+using namespace cs453;
 
+bool compareMacOS(string path1, string path2) {
+    CanonicalPathMacOS c1(path1);
+    CanonicalPathMacOS c2(path2);
+    return c1.compare(c2);
+}
+
+bool compareMacOSCI(string path1, string path2) {
+    CanonicalPathMacOSCI c1(path1);
+    CanonicalPathMacOSCI c2(path2);
+    return c1.compare(c2);
+}
+
+TEST_CASE("Resource forks are resolved correctly", "[HFS]")
+{
+    SECTION("NON-Homographs") {
+        REQUIRE_FALSE(compareMacOS("file1", "file2:../file1"));
+        REQUIRE_FALSE(compareMacOS("file1", "./file2:../file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/some/path/to/:file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/some/path/:to/file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/some/:path/to/file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/:some/path/to/file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/some/path/:to/:file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/some/:path/:to/:file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/:some/:path/:to/:file1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/some/path/to/file2:../file1"));
+    }
+
+    SECTION("Homographs") {
+        REQUIRE(compareMacOS("/some/path/to/file1", "/some/path/to/file1:forkname"));
+        REQUIRE(compareMacOS("/some/path/to/file1", "/some/path/to/file1:../file2"));
+        REQUIRE(compareMacOS("/some/path/to/file1", "/some/path/to/file1:./file2"));
+        REQUIRE(compareMacOS("file1", "file1:forkname"));
+        REQUIRE(compareMacOS("file1", "file1:../file2"));
+        REQUIRE(compareMacOS("file1", "./file1:../file2"));
+    }
+}
+
+TEST_CASE("Resource forks are resolved correctly (CI)", "[HFS-CI]")
+{
+    SECTION("NON-Homographs") {
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/SOME/PATH/TO/:FILE1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/SOME/PATH/:TO/FILE1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/SOME/:PATH/TO/FILE1"));
+        REQUIRE_FALSE(compareMacOS("/some/path/to/file1", "/:SOME/PATH/TO/FILE1"));
+    }
+
+    SECTION("Homographs") {
+        REQUIRE(compareMacOSCI("/some/path/to/file1", "/SOME/PATH/TO/FILE1:forkname"));
+        REQUIRE(compareMacOSCI("/some/path/to/file1", "/SOME/PATH/TO/FILE1:FORKMAME"));
+        REQUIRE(compareMacOSCI("/some/path/to/file1", "/Some/path/to/file1:../file2"));
+        REQUIRE(compareMacOSCI("/some/path/to/file1", "/some/Path/to/file1:./file2"));
+        REQUIRE(compareMacOSCI("file1", "FILE1:FORKNAME"));
+        REQUIRE(compareMacOSCI("file1", "FILE1:../FILE2"));
+        REQUIRE(compareMacOSCI("file1", "./FILE1:../FILE2"));
+    }
 }

@@ -16,8 +16,8 @@ int main()
     getline(cin, filename2);
 
     // Update with the specific sub-class desired
-    CanonicalPath path1(filename1);
-    CanonicalPath path2(filename2);
+    CanonicalPathPOSIX path1(filename1);
+    CanonicalPathPOSIX path2(filename2);
 
     if (path1.compare(path2)) {
         cout << "The paths are homographs" << endl;
