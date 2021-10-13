@@ -1,17 +1,13 @@
 #include <iostream>
 #include <string>
 
+#include "canonical_path_posix.hpp"
+
 using namespace std;
+using namespace cs453;
 
-string canonicalPath(string path) {
-    return path;
-}
-
-bool comparePaths(string path1, string path2) {
-    return canonicalPath(path1).compare(canonicalPath(path2)) == 0;
-}
-
-int main() {
+int main()
+{
     string filename1, filename2;
 
     cout << "Specify the first filename: ";
@@ -19,7 +15,11 @@ int main() {
     cout << "Specify the second filename: ";
     getline(cin, filename2);
 
-    if (comparePaths(filename1, filename2)) {
+    // Update with the specific sub-class desired
+    CanonicalPath path1(filename1);
+    CanonicalPath path2(filename2);
+
+    if (path1.compare(path2)) {
         cout << "The paths are homographs" << endl;
         return 0;
     }

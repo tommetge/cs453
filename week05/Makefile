@@ -10,16 +10,20 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 TEST_SRCS := $(shell find $(TEST_SRC_DIR) -name 'test-*.cpp')
 TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
 
+INC_DIRS := $(shell find $(SRC_DIR) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -Ilib
+CPPFLAGS := $(INC_FLAGS) -std=c++11
+
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	clang++ -g $(OBJS) -o $@
+	$(CXX) -g $(OBJS) -o $@
 
 $(BUILD_DIR)/$(TARGET_TEST_EXEC): $(TEST_OBJS)
-	clang++ -g $(TEST_OBJS) -o $@
+	$(CXX) -g $(TEST_OBJS) -o $@
 	$(BUILD_DIR)/$(TARGET_TEST_EXEC)
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
-	clang++ -std=c++11 -c $< -o $@
+	$(CXX) $(CPPFLAGS) -c $< -o $@
 
 all : $(BUILD_DIR)/$(TARGET_EXEC)
 
