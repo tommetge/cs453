@@ -33,11 +33,6 @@
  * covered by the POSIX tests.
  */
 
-TEST_CASE( "Example test case", "[example]" )
-{
-    REQUIRE( true == true );
-}
-
 TEST_CASE("resource forks are resolved correctly", "[HFS]")
 {
 
