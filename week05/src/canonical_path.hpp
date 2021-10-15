@@ -17,14 +17,14 @@ protected:
     std::string path;
 
 public:
-    explicit CanonicalPath(std::string p) : path(p)
+    explicit CanonicalPath(std::string &p) : path(p)
     {}
 
     // Corresponds to C().
     // Returns the canonical form of the path. Must be overridden
     // by sub-classes. The default implementation returns the raw
     // path.
-    std::string canonicalForm()
+    virtual std::string canonicalForm()
     {
         return path;
     }
