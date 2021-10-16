@@ -6,7 +6,7 @@
 
 /* A POSIX compliant filesystem must:
  *   - Allow hierarchical paths (files are members of parent folders)
- *   - Allow hierarchical navigation via '.', '..', '...'
+ *   - Allow hierarchical navigation via '.', '..'
  *   - Support UNIX permissions
  * ... and more that is less relevant here. In this test suite, we are
  * primarily concerned with hierarchical navigation using the standard
@@ -38,6 +38,7 @@ TEST_CASE("Hierarchical navigation is resolved correctly", "[POSIX]")
         REQUIRE_FALSE(compare("/some/path/to/file1", "/some/path/to/file2"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "/some/path/to/file2/../file2"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "/some/path/to/file1/../file2"));
+        REQUIRE_FALSE(compare("/some/path/to/file1.txt", "/some/path/to/file1.txt/../file2"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "/some/path/to/./file2"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "/some/path/to/../to/file2"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "/../../../path/to/file2/../file2"));
@@ -45,6 +46,7 @@ TEST_CASE("Hierarchical navigation is resolved correctly", "[POSIX]")
         REQUIRE_FALSE(compare("/some/path/to/file1", "file1"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "to/file1"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "path/to/file1"));
+        REQUIRE_FALSE(compare("/some/path/to/file1.txt", "path/to/file1.txt"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "some/path/to/file1"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "./some/path/to/file1"));
         REQUIRE_FALSE(compare("/some/path/to/file1", "/some/path/to/../file1"));
@@ -54,9 +56,12 @@ TEST_CASE("Hierarchical navigation is resolved correctly", "[POSIX]")
 
     SECTION("Homographs") {
         REQUIRE(compare("/some/path/to/file1", "/some/path/to/file1"));
+        REQUIRE(compare("/some/path/to/file1.txt", "/some/path/to/file1.txt"));
         REQUIRE(compare("/some/path/to/file1", "/some/path/to/file1/../file1"));
+        REQUIRE(compare("/some/path/to/file1.txt", "/some/path/to/file1/../file1.txt"));
         REQUIRE(compare("/some/path/to/file1", "/some/path/to/file2/../file1"));
         REQUIRE(compare("/some/path/to/file1", "/some/path/to/./file1"));
+        REQUIRE(compare("/some/path/to/file1.txt", "/some/path/to/./file1.txt"));
         REQUIRE(compare("/some/path/to/file1", "/some/path/to/../to/file1"));
         REQUIRE(compare("some/path/to/file1", "../../../some/path/to/file1"));
         REQUIRE(compare("/some/path/to/file1", "/../../../some/path/to/file1"));
