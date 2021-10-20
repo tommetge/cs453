@@ -5,11 +5,14 @@
 using namespace cs453;
 using namespace std;
 
-bool testGenerateQuery(const char *username, const char *password, const char *expected) {
+bool inline testGenerateQuery(const char *username, const char *password, const char *expected) {
     string user = string(username);
     string pass = string(password);
     string query = generateQuery(user, pass);
     string expect = string(expected);
+    if (query != expect) {
+        printf("FAILED: %s != %s", query.c_str(), expected);
+    }
     return query == expect;
 }
 
