@@ -19,4 +19,6 @@ bool inline testGenerateQuery(const char *username, const char *password, const 
 TEST_CASE( "Comment attack test cases", "[comment]" )
 {
     REQUIRE( testGenerateQuery("Root'; -- ", "nothing' OR 'x' = 'x", "SELECT COUNT(*) FROM users WHERE username = 'Root'; -- ' AND password = 'nothing' OR 'x' = 'x';") );
+
+    REQUIRE( testGenerateQuery("sam", "x'; UPDATE dataStore SET category = 'You have been hacked!", "SELECT COUNT(*) FROM users WHERE username = 'sam' AND password = 'x'; UPDATE dataStore SET category = 'You have been hacked!'") );
 }

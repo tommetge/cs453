@@ -19,4 +19,6 @@ bool inline testGenerateQuery(const char *username, const char *password, const 
 TEST_CASE( "Tautology attack test cases", "[tautology]" )
 {
     REQUIRE( testGenerateQuery("tom", "nothing' OR 'x' = 'x", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = 'nothing' OR 'x' = 'x';") );
+
+    REQUIRE( testGenerateQuery("sam", "nothing' OR 'god' = 'god", "SELECT COUNT(*) FROM users WHERE username = 'sam' AND password = 'nothing' OR 'god' = 'god"';") );
 }

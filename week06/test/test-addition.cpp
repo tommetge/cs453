@@ -18,5 +18,7 @@ bool inline testGenerateQuery(const char *username, const char *password, const 
 
 TEST_CASE( "Addition attack test cases", "[addition]" )
 {
-    REQUIRE( testGenerateQuery("tom", " nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = ' nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234';") );
+    REQUIRE( testGenerateQuery("tom", "nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = 'nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234';") );
+
+    REQUIRE( testGenerateQuery("sam", "nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'sam' AND password = 'nothing'; INSERT INTO passwordList (name, passwd) VALUES 'sam', 'samluvu';") );
 }
