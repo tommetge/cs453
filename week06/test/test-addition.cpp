@@ -5,13 +5,13 @@
 using namespace cs453;
 using namespace std;
 
-bool inline testGenerateQuery(const char *username, const char *password, const char *expected) {
+bool inline testGenerateQuery(const char *username, const char *password, const char *expected, QueryState state = QueryStateNoMitigation) {
     string user = string(username);
     string pass = string(password);
-    string query = generateQuery(user, pass);
+    string query = generateQuery(user, pass, state);
     string expect = string(expected);
     if (query != expect) {
-        printf("FAILED: %s != %s", query.c_str(), expected);
+        printf("\nFAILED:\n\t%s\n!=\n\t%s\n", query.c_str(), expected);
     }
     return query == expect;
 }
@@ -19,4 +19,16 @@ bool inline testGenerateQuery(const char *username, const char *password, const 
 TEST_CASE( "Addition attack test cases", "[addition]" )
 {
     REQUIRE( testGenerateQuery("tom", " nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = ' nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234';") );
+}
+
+TEST_CASE( "Addition attack with weak mitigation", "[addition-weak]")
+{
+    REQUIRE( testGenerateQuery("tom", " nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = ' nothing; INSERT INTO passwordList (name, passwd) VALUES Bob, 1234';", QueryStateWeakMitigation) );
+    REQUIRE_FALSE( testGenerateQuery("tom", " nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = ' nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234';", QueryStateWeakMitigation) );
+}
+
+TEST_CASE( "Addition attack with strong mitigation", "[addition-strong]")
+{
+    REQUIRE( testGenerateQuery("tom", " nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = '';", QueryStateStrongMitigation) );
+    REQUIRE_FALSE( testGenerateQuery("tom", " nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = ' nothing'; INSERT INTO passwordList (name, passwd) VALUES 'Bob', '1234';", QueryStateStrongMitigation) );
 }
