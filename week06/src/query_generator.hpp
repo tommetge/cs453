@@ -5,7 +5,13 @@
 
 namespace cs453 {
 
-std::string generateQuery(std::string &username, std::string &password);
+enum QueryState {
+    QueryStateNoMitigation,
+    QueryStateWeakMitigation,
+    QueryStateStrongMitigation,
+};
+
+std::string generateQuery(std::string &username, std::string &password, QueryState state = QueryStateNoMitigation);
 
 }; // namespace cs453
 
