@@ -35,6 +35,10 @@ test: $(BUILD_DIR)/$(TARGET_TEST_EXEC)
 $(SRC_DIR)/combined.cpp: $(SRCS) $(HDRS)
 	cat $(HDRS) > $@
 	cat $(SRCS) >> $@
+	echo "\n\n/* TESTS */\n\n" >> $@
+	echo "/*\n" >> $@
+	cat $(TEST_SRCS) >> $@
+	echo "*/\n" >> $@
 
 $(BUILD_DIR)/combined: $(SRC_DIR)/combined.cpp
 	$(CXX) $(CPPFLAGS) $(SRC_DIR)/combined.cpp -o $@
