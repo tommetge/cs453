@@ -1,6 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <sstream>
 using namespace std;
 
 void one(long number);
@@ -97,21 +98,73 @@ void two(long number)              // 345678
    {
       ////////////////////////////////////////////////
       // Insert code here to display the callstack
+      long *address = &bow + i;
+      ostringstream hexVal;
+      hexVal << "0x" << hex << *address;
       
+      cout << "[" << setw(2) << i << "]";
+      cout << setw(16) << address;
+      cout << setw(20) << hexVal.str();
+      cout << setw(20) << dec << *address;
+      cout << setw(18) << displayCharArray((char *)address) << endl;
       //
       ////////////////////////////////////////////////
    }
 
    ////////////////////////////////////////////////
    // Insert code here to change the variables in main()
-                                                                                
+
+   // Fetch the current frame
+   // The current frame starts at this offset from &bow (on my machine)
+   int frameOffset = 4; // 4 * 8 = 32 bytes
+
+   // The current frame's frame pointer (which points to the frame pointer
+   // for one())
+   long *framePtr = (long *)(&bow + frameOffset);
+
+   // Fetch the frame pointer for one() by following the current frame's
+   // frame pointer
+   long *frameOnePtr = (long *)*framePtr;
+
+   // The main frame can be found by following frameOnePtr.
+   long *frameMainPtr = (long *)*frameOnePtr;
+
    // change text in main() to "*main**"
+
+   // Note: the following uses offsets relative to the main frame's
+   // frame pointer. This is only necessary for the first object (the
+   // *main char pointer). After finding that first object, all other
+   // objects could just as easily be found by offsets relative to the
+   // last object pointer.
+
+   // The text is found 2 blocks before the main frame's frame pointer
+   char *main = (char *)(frameMainPtr - 2);
+   assert(strncmp(main, "*MAIN**", 8) == 0);
+   strncpy(main, "*main**", 8);
 
    // change number in main() to 654321
 
+   // The number is found 4 blocks before the main frame's frame pointer
+   // (or 2 blocks before char *main found above)
+   int *num = (int *)(frameMainPtr - 4);
+   assert(*num == 123456);
+   *num = 654321;
+
    // change pointerFunction in main() to point to pass
 
+   // pointerFunction is found 5 blocks before the main frame's frame pointer
+   // (or 1 block before int *num found above)
+   long *pointerFunctionPtr = (long *)(frameMainPtr - 5);
+   assert((long)*pointerFunctionPtr == (long)&fail);
+   *pointerFunctionPtr = (long)&pass;
+
    // change message in main() to point to passMessage
+
+   // message is found 6 blocks before the main frame's frame pointer
+   // (or 1 block before long *pointerFunctionPtr found above)
+   long *message = (long *)(frameMainPtr - 6);
+   assert((long)*message == (long)&failMessage[0]);
+   *message = (long)&passMessage[0];
 
    //
    ////////////////////////////////////////////////
