@@ -21,6 +21,8 @@ int main()
    void (*pointerFunction)() = fail;
    const char * message = failMessage;
 
+   cout << "pointerFunction: " << hex << (long)*pointerFunction << endl;
+
    // display the initial values of the local variables
    cout << "main() : " << (void *)main << endl;
    cout << "\ttext:             " << text              << endl;
@@ -94,18 +96,27 @@ void two(long number)              // 345678
         << "-------------------+"
         << "-------------------+"
         << "-----------------+\n";
-   for (long i = 24; i >= -4; i--)   // You may need to change 24 to another number
+   for (long i = 32; i >= -8; i--)   // You may need to change 24 to another number
    {
       ////////////////////////////////////////////////
       // Insert code here to display the callstack
+      // Our anchor is the address of the `bow` variable. The current location
+      // is that address + the offset `i`.
       long *address = &bow + i;
+
+      // Prepend the "0x" to the hex value.
       ostringstream hexVal;
       hexVal << "0x" << hex << *address;
       
+      // Output the current offset (i.e. [ 1])
       cout << "[" << setw(2) << i << "]";
+      // Output the hex representation of the address
       cout << setw(16) << address;
+      // Output the hex representation of the memory at this address
       cout << setw(20) << hexVal.str();
+      // Output the decimal representation of the memory at this address
       cout << setw(20) << dec << *address;
+      // Output the ASCII representation of the memory at this address
       cout << setw(18) << displayCharArray((char *)address) << endl;
       //
       ////////////////////////////////////////////////
@@ -114,8 +125,15 @@ void two(long number)              // 345678
    ////////////////////////////////////////////////
    // Insert code here to change the variables in main()
 
+   // Check assumptions about the local machine
+   // Note: these are not perfect checks, only strong indicators that our
+   // environment is what we expect. The following implementation will only
+   // work on x86_64 - specifically AMD64 ABI.
+   assert(sizeof(long) == 8);
+   assert(sizeof(long *) == 8);
+
    // Fetch the current frame
-   // The current frame starts at this offset from &bow (on my machine)
+   // The current frame starts at this offset from &bow (on the target machine)
    int frameOffset = 4; // 4 * 8 = 32 bytes
 
    // The current frame's frame pointer (which points to the frame pointer
