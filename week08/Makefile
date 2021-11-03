@@ -18,13 +18,13 @@ TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
 
 INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -Ilib
-CPPFLAGS := $(INC_FLAGS) -std=c++11 -g
+CPPFLAGS := $(INC_FLAGS) -std=c++11 -g # -fsanitize=address -mllvm -asan-stack=0
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CXX) -g $(OBJS) -o $@
+	$(CXX) $(CPPFLAGS) $(OBJS) -o $@
 
 $(BUILD_DIR)/$(TARGET_TEST_EXEC): $(TEST_OBJS) $(OBJS_NO_MAIN)
-	$(CXX) -g $(TEST_OBJS) $(OBJS_NO_MAIN) -o $@
+	$(CXX) $(CPPFLAGS) $(TEST_OBJS) $(OBJS_NO_MAIN) -o $@
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
