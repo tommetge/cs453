@@ -17,9 +17,6 @@ int arrayVulnerability(int index, int score)
    // Weighting for each assignment
    // Note: this is the protected asset
    int weights[5] = { 10, 20, 30, 40, 50 };
-   // cout << "Weights address: " << hex << &weights[0] << endl;
-   // cout << "Scores address: " << hex << &scores[0] << endl;
-   // cout << "Targeted address: " << hex << &scores[index] << endl;
 
    // Sanitize our input: no scores > 100 or < 0!
    if (score > 100) {
@@ -38,11 +35,9 @@ int arrayVulnerability(int index, int score)
    for (int i=0; i<5; i++) {
       weightedScores += scores[i] * weights[i];
       totalWeights += weights[i];
-      // cout << "\t" << dec << scores[i] << " | " << weights[i] << endl;
    }
 
    return weightedScores / totalWeights;
-   // cout << "Weighted score: " << dec << weightedScores / totalWeights << endl;
 }
 
 /**************************************
@@ -119,6 +114,7 @@ void arcVulnerability(const char *input)
  *************************************/
 void arcWorking()
 {
+   cout << "Working: ";
    arcVulnerability("Hi\0\0");
 }
 
@@ -142,6 +138,7 @@ void arcExploit()
    void (* pointerToUnsafe)() = arcUnsafeFunction;
    memcpy(maliciousInput + 4, (long *)&pointerToUnsafe, sizeof(long *));
 
+   cout << "Exploit: ";
    arcVulnerability(maliciousInput);
 }
 
@@ -245,11 +242,12 @@ void stackVulnerability(const string &str)
  *************************************/
 void stackWorking()
 {
+   printf("Stack is");
    char msg[8] = "Hi!\0\0\0\0";
    stackVulnerability(msg);
+   printf(" NOT ");
+   printf(" smashed!\n");
 }
-
-static bool stackIsHealthy = false;
 
 /**************************************
  * STACK EXPLOIT
@@ -281,7 +279,7 @@ void stackExploit()
 
    string *exploitStr = new string(exploit, 32);
    stackVulnerability(*exploitStr);
-   printf("NOT ");
+   printf(" NOT");
    printf(" smashed!\n");
 }
 
@@ -353,6 +351,7 @@ void intOverflowVulnerability(int octalPerms)
  *************************************/
 void intOverflowWorking()
 {
+   cout << "Working: ";
    intOverflowVulnerability(01);
 }
 
@@ -362,6 +361,7 @@ void intOverflowWorking()
  *************************************/
 void intOverflowExploit()
 {
+   cout << "Exploit: ";
    intOverflowVulnerability(100);
 }
 
@@ -406,47 +406,81 @@ static const char *SectionBoundary = "********************\n";
  **********************************************/
 int main()
 {
-   cout << "Array Index" << endl;
-   cout << SectionBoundary << endl;
+   string input;
+   cout << "Select exploit: " << endl;
+   cout << "\t1: Array Index" << endl;
+   cout << "\t2: ARC" << endl;
+   cout << "\t3: VTABLE" << endl;
+   cout << "\t4: Stack Smashing" << endl;
+   cout << "\t5: Heap Spraying" << endl;
+   cout << "\t6: Integer Overflow" << endl;
+   cout << "\t7: ASCII to Unicode" << endl;
+   cout << "> ";
+   
+   cin >> input;
+   int selection = stoi(input);
 
-   arrayWorking();
-   arrayExploit();
+   switch(selection) {
+      case 1:
+         cout << "Array Index" << endl;
+         cout << SectionBoundary << endl;
 
-   cout << endl << "ARC" << endl;
-   cout << SectionBoundary << endl;
+         arrayWorking();
+         arrayExploit();
 
-   arcWorking();
-   arcExploit();
+         break;
+      case 2:
+         cout << endl << "ARC" << endl;
+         cout << SectionBoundary << endl;
 
-   cout << endl << "VTABLE" << endl;
-   cout << SectionBoundary << endl;
+         arcWorking();
+         arcExploit();
 
-   vtableWorking();
-   vtableExploit();
+         break;
+      case 3:
+         cout << endl << "VTABLE" << endl;
+         cout << SectionBoundary << endl;
 
-   cout << endl << "Stack Smashing" << endl;
-   cout << SectionBoundary << endl;
+         vtableWorking();
+         vtableExploit();
 
-   stackWorking();
-   stackExploit();
+         break;
+      case 4:
+         cout << endl << "Stack Smashing" << endl;
+         cout << SectionBoundary << endl;
 
-   cout << endl << "Heap Spraying" << endl;
-   cout << SectionBoundary << endl;
+         stackWorking();
+         stackExploit();
 
-   heapWorking();
-   heapExploit();
+         break;
+      case 5:
+         cout << endl << "Heap Spraying" << endl;
+         cout << SectionBoundary << endl;
 
-   cout << endl << "Integer Overflow" << endl;
-   cout << SectionBoundary << endl;
+         heapWorking();
+         heapExploit();
 
-   intOverflowWorking();
-   intOverflowExploit();
+         break;
+      case 6:
+         cout << endl << "Integer Overflow" << endl;
+         cout << SectionBoundary << endl;
 
-   cout << endl << "ASCII to Unicode" << endl;
-   cout << SectionBoundary << endl;
+         intOverflowWorking();
+         intOverflowExploit();
 
-   ansiiToUnicodeWorking();
-   ansiiToUnicodeExploit();
+         break;
+      case 7:
+         cout << endl << "ASCII to Unicode" << endl;
+         cout << SectionBoundary << endl;
+
+         ansiiToUnicodeWorking();
+         ansiiToUnicodeExploit();
+
+         break;
+      default:
+         cout << "Invalid selection";
+         exit(-1);
+   }
 
    return 0;
 }

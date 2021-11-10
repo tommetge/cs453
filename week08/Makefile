@@ -6,12 +6,14 @@ SRC_DIR := src
 TEST_SRC_DIR := test
 
 SRCS := $(shell find $(SRC_DIR) -name '*.cpp' \
-	-not -path src/combined.cpp)
+	-not -path src/combined.cpp \
+	-not -path src/scratch.cpp)
 HDRS := $(shell find $(SRC_DIR) -name '*.hpp' -or -name '*.h')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 SRCS_NO_MAIN := $(shell find $(SRC_DIR) -name '*.cpp' \
 	-not -path src/main.cpp \
-	-not -path src/combined.cpp)
+	-not -path src/combined.cpp \
+	-not -path src/scratch.cpp)
 OBJS_NO_MAIN := $(SRCS_NO_MAIN:%=$(BUILD_DIR)/%.o)
 TEST_SRCS := $(shell find $(TEST_SRC_DIR) -name 'test-*.cpp')
 TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
@@ -51,6 +53,14 @@ $(BUILD_DIR)/combined: $(SRC_DIR)/combined.cpp
 	$(CXX) $(CPPFLAGS) $(SRC_DIR)/combined.cpp -o $@
 
 combined : $(BUILD_DIR)/combined
+
+$(BUILD_DIR)/scratch.cpp.o: $(SRC_DIR)/scratch.cpp
+	$(CXX) $(CPPFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/scratch: $(BUILD_DIR)/scratch.cpp.o
+	$(CXX) -g $(BUILD_DIR)/scratch.cpp.o -o $@
+
+scratch : $(BUILD_DIR)/scratch
 
 .PHONY: clean
 clean :
