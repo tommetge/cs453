@@ -21,7 +21,7 @@ TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
 
 INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -Ilib
-CPPFLAGS := $(INC_FLAGS) -g
+CPPFLAGS := $(INC_FLAGS) -g -Weverything
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(CPPFLAGS) $(OBJS) -o $@
