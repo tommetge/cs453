@@ -9,6 +9,36 @@
 
 #pragma once
 
-struct Control {
-   PUBLIC, CONFIDENTIAL, PRIVILEGED, SECRET
+#include <assert.h>
+#include <string>
+
+enum Control {
+    PUBLIC, CONFIDENTIAL, PRIVILEGED, SECRET
 };
+
+static std::string controlToString(Control control)
+{
+    switch(control) {
+        case PUBLIC:
+            return std::string("Public");
+        case CONFIDENTIAL:
+            return std::string("Confidential");
+        case PRIVILEGED:
+            return std::string("Privileged");
+        case SECRET:
+            return std::string("Secret");
+        default:
+            printf("Invalid control!\n");
+            assert(false);
+    }
+}
+
+static bool securityConditionRead(Control assetControl, Control subjectControl)
+{
+    return subjectControl >= assetControl;
+}
+
+static bool securityConditionWrite(Control assetControl, Control subjectControl)
+{
+    return subjectControl <= assetControl;
+}

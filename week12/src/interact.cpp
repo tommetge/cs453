@@ -23,11 +23,11 @@ using namespace std;
  *************************************************************/
 const User users[] =
 {
-   { "AdmiralAbe",     "password" },  
-   { "CaptainCharlie", "password" }, 
-   { "SeamanSam",      "password" },
-   { "SeamanSue",      "password" },
-   { "SeamanSly",      "password" }
+   { "AdmiralAbe",     "password", SECRET },  
+   { "CaptainCharlie", "password", PRIVILEGED }, 
+   { "SeamanSam",      "password", CONFIDENTIAL },
+   { "SeamanSue",      "password", CONFIDENTIAL },
+   { "SeamanSly",      "password", CONFIDENTIAL }
 };
 
 const int ID_INVALID = -1;
@@ -53,7 +53,9 @@ Interact::Interact(const string & userName,
  ****************************************************/
 void Interact::show() const
 {
-   pMessages->show(promptForId("display"));
+   Control control = controlFromUser(userName);
+   pMessages->show(control,
+                   promptForId("display"));
 }
    
 /****************************************************
@@ -62,7 +64,8 @@ void Interact::show() const
  ***************************************************/
 void Interact::display() const
 {
-   pMessages->display();
+   Control control = controlFromUser(userName);
+   pMessages->display(control);
 }
 
 /****************************************************
@@ -71,7 +74,9 @@ void Interact::display() const
  ****************************************************/
 void Interact::add()
 {
-   pMessages->add(promptForLine("message"),
+   Control control = controlFromUser(userName);
+   pMessages->add(controlToString(control),
+                  promptForLine("message"),
                   userName,
                   promptForLine("date"));
 }
@@ -82,8 +87,10 @@ void Interact::add()
  ****************************************************/
 void Interact::update()
 {
+   Control control = controlFromUser(userName);
    int id = promptForId("update");
-   pMessages->update(id,
+   pMessages->update(control,
+                     id,
                      promptForLine("message"));
 }
 
@@ -93,7 +100,9 @@ void Interact::update()
  ***************************************************/
 void Interact::remove()
 {
-   pMessages->remove(promptForId("delete"));
+   Control control = controlFromUser(userName);
+   pMessages->remove(control,
+                     promptForId("delete"));
 }
 
 /****************************************************
@@ -136,10 +145,10 @@ int Interact::promptForId(const char * verb) const
  * authenticate the user: find their control level
  ****************************************************/
 void Interact::authenticate(const string & userName,
-                            const string & password) const
+                            const string & password)
 {
    int id = idFromUser(userName);
-   bool authenticated = false;
+   authenticated = false;
    if (ID_INVALID != id && password == string(users[id].password))
       authenticated = true;
 }
@@ -154,4 +163,18 @@ int Interact::idFromUser(const string & userName) const
       if (userName == string(users[idUser].name))
          return idUser;
    return ID_INVALID;
+}
+
+/****************************************************
+ * INTERACT :: CONTROL FROM USER
+ * Find the Control of a given user
+ ****************************************************/
+Control Interact::controlFromUser(const string & userName) const
+{
+   Control control = PUBLIC;
+   if (authenticated) {
+      int id = idFromUser(userName);
+      control = users[id].control;
+   }
+   return control;
 }

@@ -21,6 +21,7 @@ struct User
 {
    const char *name;
    const char *password;
+   const Control control;
 };
 
 /****************************************************
@@ -54,6 +55,7 @@ private:
    Messages * pMessages;
    std::string userName;
    std::istream *in;
+   bool authenticated;
 
    // prompt for a line of input
    std::string promptForLine(const char * verb) const;
@@ -63,10 +65,13 @@ private:
 
    // authenticate the user;
    void authenticate(const std::string & userName,
-                     const std::string & password) const;
+                     const std::string & password);
 
    // find the ID of a given user
    int idFromUser(const std::string & userName) const;
+
+   // find the Control of a given user
+   Control controlFromUser(const std::string & userName) const;
 };
 
 // display the set of users in the system

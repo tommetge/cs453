@@ -29,15 +29,35 @@ Message ::  Message(int & idNext)
  * Create a message and fill it
  **************************************************/
 Message::Message(int & idNext,
+                 const string & control,
                  const string & text,
                  const string & author,
                  const string & date)
 {
+   this->control = control;
    this->text = text;
    this->author = author;
    this->date = date;
    this->id = idNext++;
    empty = false;
+}
+
+/**************************************************
+ * MESSAGE :: GET CONTROL
+ * Returns the access control for this message
+ **************************************************/
+Control Message::getControl() const
+{
+   for (int c = PUBLIC; c <= SECRET; c++)
+   {
+      if (this->control == controlToString((Control)c))
+      {
+         return (Control)c;
+      }
+   }
+
+   printf("Invalid control!\n");
+   assert(false);
 }
 
 /**************************************************

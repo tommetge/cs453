@@ -25,20 +25,24 @@ public:
    Messages(const char * fileName) { readMessages(fileName); }
 
    // display the list of messages
-   void display() const;
+   void display(const Control subjectControl) const;
 
    // show a single message
-   void show(int id) const;
+   void show(const Control subjectControl,
+             int id) const;
 
    // update one single message
-   void update(int id,
+   void update(const Control subjectControl,
+               int id,
                const std::string & text);
 
    // remove a single message
-   void remove(int id);
+   void remove(const Control subjectControl,
+               int id);
 
    // add a new message
-   void add(const std::string & text,
+   void add(const std::string & control,
+            const std::string & text,
             const std::string & author,
             const std::string & date);
 

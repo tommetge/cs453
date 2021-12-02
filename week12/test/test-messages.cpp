@@ -159,6 +159,23 @@ TEST_CASE("Messages", "[messages]")
     REQUIRE(out.str() == string(expectedOutput2));
   }
 
+  SECTION("Display Message - Privileged")
+  {
+    ostringstream out;
+    stringstream in("100\n");
+    cout_redirect out_redir(out.rdbuf());
+
+    Messages messages(TEST_MESSAGES_FILE);
+    Interact interact("CaptainCharlie", "password", messages, &in);
+    interact.show();
+
+    const char *expectedOutput =
+      "Select the message ID to display: "
+      "\tMessage: You ask what is our aim? I can answer in one word: Victory!\n";
+
+    REQUIRE(out.str() == string(expectedOutput));
+  }
+
   SECTION("Display Message - Confidential")
   {
     ostringstream out;
@@ -169,7 +186,7 @@ TEST_CASE("Messages", "[messages]")
 
     // Reading up is not allowed
 
-    Interact interact("AdmiralAbe", "password", messages, &in);
+    Interact interact("SeamanSam", "password", messages, &in);
     interact.show();
 
     const char *expectedOutput =
@@ -187,7 +204,7 @@ TEST_CASE("Messages", "[messages]")
 
     const char *expectedOutput2 =
       "Select the message ID to display: "
-      "\tMessage: Good thing our carriers were out to sea on Sunday!\n";
+      "\tMessage: You ask what is our aim? I can answer in one word: Victory!\n";
 
     REQUIRE(out.str() == string(expectedOutput2));
 
@@ -201,43 +218,9 @@ TEST_CASE("Messages", "[messages]")
 
     const char *expectedOutput3 =
       "Select the message ID to display: "
-      "\tMessage: The weather will be perfect, not a cloud in the sky\n";
+      "\tMessage: I know for certain I shot down two planes or perhaps more\n";
 
     REQUIRE(out.str() == string(expectedOutput3));
-  }
-
-  SECTION("Display Message - Privileged")
-  {
-    ostringstream out;
-    stringstream in("100\n");
-    cout_redirect out_redir(out.rdbuf());
-
-    Messages messages(TEST_MESSAGES_FILE);
-    Interact interact("AdmiralAbe", "password", messages, &in);
-    interact.show();
-
-    const char *expectedOutput =
-      "Select the message ID to display: "
-      "\tMessage: No man can tame a tiger into a kitten by stroking it.\n";
-
-    REQUIRE(out.str() == string(expectedOutput));
-  }
-
-  SECTION("Display Message - Confidential")
-  {
-    ostringstream out;
-    stringstream in("100\n");
-    cout_redirect out_redir(out.rdbuf());
-
-    Messages messages(TEST_MESSAGES_FILE);
-    Interact interact("AdmiralAbe", "password", messages, &in);
-    interact.show();
-
-    const char *expectedOutput =
-      "Select the message ID to display: "
-      "\tMessage: You ask what is our aim? I can answer in one word: Victory!\n";  
-
-    REQUIRE(out.str() == string(expectedOutput));
   }
 
   SECTION("Display Message - Public")
@@ -247,12 +230,11 @@ TEST_CASE("Messages", "[messages]")
     cout_redirect out_redir(out.rdbuf());
 
     Messages messages(TEST_MESSAGES_FILE);
-    Interact interact("AdmiralAbe", "password", messages, &in);
+    Interact interact("Nobody", "password", messages, &in);
     interact.show();
 
     const char *expectedOutput =
-      "Select the message ID to display: "
-      "\tMessage: You ask what is our aim? I can answer in one word: Victory!\n";  
+      "Select the message ID to display: ";  
 
     REQUIRE(out.str() == string(expectedOutput));
   }
@@ -273,11 +255,7 @@ TEST_CASE("Messages", "[messages]")
       "\t[102] Message from Seaman Smith at 5 December 1941\n"
       "\t[103] Message from Walter the Weatherman at 7 December 1941\n"
       "\t[104] Message from President Franklin D. Roosevelt at 8 December 1941\n"
-      "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n"
-      "\t[106] Message from Fleet Admiral Chester W. Nimitz at 10 December 1941\n"
-      "\t[107] Message from Captain Buckmaster at 7 June 1942\n"
-      "\t[108] Message from General George S. Patton at 1 February 1943\n"
-      "\t[109] Message from J. Robert Oppenheimer at 16 July, 1945\n";
+      "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n";
 
     REQUIRE(out.str() == string(expectedOutput));
 
@@ -293,11 +271,7 @@ TEST_CASE("Messages", "[messages]")
       "\t[102] Message from Seaman Smith at 5 December 1941\n"
       "\t[103] Message from Walter the Weatherman at 7 December 1941\n"
       "\t[104] Message from President Franklin D. Roosevelt at 8 December 1941\n"
-      "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n"
-      "\t[106] Message from Fleet Admiral Chester W. Nimitz at 10 December 1941\n"
-      "\t[107] Message from Captain Buckmaster at 7 June 1942\n"
-      "\t[108] Message from General George S. Patton at 1 February 1943\n"
-      "\t[109] Message from J. Robert Oppenheimer at 16 July, 1945\n";
+      "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n";
 
     REQUIRE(out.str() == string(expectedOutput2));
   }
@@ -318,11 +292,7 @@ TEST_CASE("Messages", "[messages]")
       "\t[102] Message from Seaman Smith at 5 December 1941\n"
       "\t[103] Message from Walter the Weatherman at 7 December 1941\n"
       "\t[104] Message from President Franklin D. Roosevelt at 8 December 1941\n"
-      "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n"
-      "\t[106] Message from Fleet Admiral Chester W. Nimitz at 10 December 1941\n"
-      "\t[107] Message from Captain Buckmaster at 7 June 1942\n"
-      "\t[108] Message from General George S. Patton at 1 February 1943\n"
-      "\t[109] Message from J. Robert Oppenheimer at 16 July, 1945\n";
+      "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n";
 
     REQUIRE(out.str() == string(expectedOutput));
 
@@ -343,10 +313,6 @@ TEST_CASE("Messages", "[messages]")
       "\t[103] Message from Walter the Weatherman at 7 December 1941\n"
       "\t[104] Message from President Franklin D. Roosevelt at 8 December 1941\n"
       "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n"
-      "\t[106] Message from Fleet Admiral Chester W. Nimitz at 10 December 1941\n"
-      "\t[107] Message from Captain Buckmaster at 7 June 1942\n"
-      "\t[108] Message from General George S. Patton at 1 February 1943\n"
-      "\t[109] Message from J. Robert Oppenheimer at 16 July, 1945\n"
       "\t[110] Message from SeamanSly at 1 January, 1944\n";
 
     REQUIRE(out.str() == string(expectedOutput2));
@@ -383,10 +349,6 @@ TEST_CASE("Messages", "[messages]")
       "\t[103] Message from Walter the Weatherman at 7 December 1941\n"
       "\t[104] Message from President Franklin D. Roosevelt at 8 December 1941\n"
       "\t[105] Message from Lt. Kenneth Taylor at 9 December 1941\n"
-      "\t[106] Message from Fleet Admiral Chester W. Nimitz at 10 December 1941\n"
-      "\t[107] Message from Captain Buckmaster at 7 June 1942\n"
-      "\t[108] Message from General George S. Patton at 1 February 1943\n"
-      "\t[109] Message from J. Robert Oppenheimer at 16 July, 1945\n"
       "\t[110] Message from SeamanSly at 1 January, 1944\n";
 
     REQUIRE(out.str() == string(expectedOutput2));

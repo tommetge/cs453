@@ -22,24 +22,26 @@ using namespace std;
  * MESSAGES :: DISPLAY
  * display the list of messages
  ***********************************************/
-void Messages::display() const
+void Messages::display(const Control subjectControl) const
 {
    for (list <Message> :: const_iterator it = messages.begin();
         it != messages.end();
         ++it)
-      it->displayProperties();
+      if (securityConditionRead(it->getControl(), subjectControl)) {
+         it->displayProperties();
+      }
 }
 
 /***********************************************
  * MESSAGES :: SHOW
  * show a single message
  **********************************************/
-void Messages::show(int id) const
+void Messages::show(const Control subjectControl, int id) const
 {
    for (list <Message> :: const_iterator it = messages.begin();
         it != messages.end();
         ++it)
-      if (it->getID() == id)
+      if (it->getID() == id && securityConditionRead(it->getControl(), subjectControl))
          it->displayText();
 }
 
@@ -47,12 +49,12 @@ void Messages::show(int id) const
  * MESSAGES :: UPDATE
  * update one single message
  ***********************************************/
-void Messages::update(int id, const string & text)
+void Messages::update(const Control subjectControl, int id, const string & text)
 {
    for (list <Message> :: iterator it = messages.begin();
         it != messages.end();
         ++it)
-      if (it->getID() == id)
+      if (it->getID() == id && securityConditionWrite(it->getControl(), subjectControl))
          it->updateText(text);
 }
 
@@ -60,12 +62,12 @@ void Messages::update(int id, const string & text)
  * MESSAGES :: REMOVE
  * remove a single message
  **********************************************/
-void Messages::remove(int id)
+void Messages::remove(const Control subjectControl, int id)
 {
    for (list <Message> :: iterator it = messages.begin();
         it != messages.end();
         ++it)
-      if (it->getID() == id)
+      if (it->getID() == id && securityConditionWrite(it->getControl(), subjectControl))
          it->clear();
 }
 
@@ -73,11 +75,12 @@ void Messages::remove(int id)
  * MESSAGES :: ADD
  * add a new message
  **********************************************/
-void Messages::add(const string & text,
+void Messages::add(const string & control,
+                   const string & text,
                    const string & author,
                    const string & date)
 {
-   Message message(idNext, text, author, date);
+   Message message(idNext, control, text, author, date);
    messages.push_back(message);
 }
 
@@ -111,7 +114,7 @@ void Messages::readMessages(const char * fileName)
 
       if (!fin.fail())
       {
-         Message message(idNext, text, author, date);
+         Message message(idNext, textControl, text, author, date);
          messages.push_back(message);
       }
    }
