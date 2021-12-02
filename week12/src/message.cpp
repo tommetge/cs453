@@ -16,7 +16,7 @@ using namespace std;
  * MESSAGE DEFAULT CONSTRUCTOR
  * Set a message to empty
  **************************************************/
-Message ::  Message()
+Message ::  Message(int & idNext)
 {
    empty = true;
    text = "Empty";
@@ -28,7 +28,8 @@ Message ::  Message()
  * MESSAGE NON-DEFAULT CONSTRUCTOR
  * Create a message and fill it
  **************************************************/
-Message::Message(const string & text,
+Message::Message(int & idNext,
+                 const string & text,
                  const string & author,
                  const string & date)
 {
@@ -87,5 +88,3 @@ void Message::clear()
    date.clear();
    empty = true;
 }
-
-int Message::idNext = 100;

@@ -21,10 +21,11 @@ class Message
 {
 public:
    // default constructor for an empty message
-   Message();
+   Message(int & idNext);
 
    // the most commonly used constructor: create a message
-   Message(const std::string & text,
+   Message(int & idNext,
+           const std::string & text,
            const std::string & author,
            const std::string & date);
 
@@ -45,7 +46,6 @@ public:
    
 private:
    int id;                   // the unique ID of this message
-   static int idNext;        // the id of the next message created
    bool empty;               // is this message empty / cleared?
    std::string text;         // the textual content of this message
    std::string author;       // the author of this message

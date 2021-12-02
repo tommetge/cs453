@@ -14,15 +14,15 @@ DEPS := $(OBJ:%.o=%.d)
 SRCS_NO_MAIN := $(shell find $(SRC_DIR) -name '*.cpp' \
 	-not -path src/main.cpp \
 	-not -path src/combined.cpp \
-	-not -path src/scratch.cpp)\
-	-not -path src/lab12.cpp
+	-not -path src/scratch.cpp\
+	-not -path src/lab12.cpp)
 OBJS_NO_MAIN := $(SRCS_NO_MAIN:%=$(BUILD_DIR)/%.o)
 TEST_SRCS := $(shell find $(TEST_SRC_DIR) -name 'test-*.cpp')
 TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
 
 INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -Ilib
-CPPFLAGS := $(INC_FLAGS) -std=c++11 -MMD -g # -Weverything
+CPPFLAGS := $(INC_FLAGS) -std=c++17 -MMD -g # -Weverything
 
 -include $(DEP)
 

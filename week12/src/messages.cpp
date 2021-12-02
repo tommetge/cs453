@@ -77,7 +77,7 @@ void Messages::add(const string & text,
                    const string & author,
                    const string & date)
 {
-   Message message(text, author, date);
+   Message message(idNext, text, author, date);
    messages.push_back(message);
 }
 
@@ -111,7 +111,7 @@ void Messages::readMessages(const char * fileName)
 
       if (!fin.fail())
       {
-         Message message(text, author, date);
+         Message message(idNext, text, author, date);
          messages.push_back(message);
       }
    }

@@ -32,7 +32,8 @@ class Interact
 public:
    Interact(const std::string & userName,
             const std::string & password,
-            Messages & messages);
+            Messages & messages,
+            std::istream * in = &std::cin);
 
    // show a single message
    void show() const;
@@ -52,6 +53,7 @@ public:
 private:
    Messages * pMessages;
    std::string userName;
+   std::istream *in;
 
    // prompt for a line of input
    std::string promptForLine(const char * verb) const;

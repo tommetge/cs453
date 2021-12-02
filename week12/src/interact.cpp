@@ -38,11 +38,13 @@ const int ID_INVALID = -1;
  ***************************************************/
 Interact::Interact(const string & userName,
                    const string & password,
-                   Messages & messages)
+                   Messages & messages,
+                   std::istream * in)
 {
    authenticate(userName, password);
    this->userName = userName;
    this->pMessages = &messages;
+   this->in = in;
 }
 
 /****************************************************
@@ -112,7 +114,7 @@ string Interact::promptForLine(const char * verb) const
 {
    string line;
    cout << "Please provide a " << verb << ": ";
-   getline(cin, line);
+   getline(*in, line);
    return line;
 }
 
@@ -124,8 +126,8 @@ int Interact::promptForId(const char * verb) const
 {
    string id;
    cout << "Select the message ID to " << verb << ": ";
-   cin  >> id;
-   cin.ignore();
+   *in  >> id;
+   in->ignore();
    return atoi(id.c_str());
 }
 

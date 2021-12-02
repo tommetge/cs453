@@ -48,4 +48,7 @@ private:
 
    // read the messages from a file
    void readMessages(const char * fileName);
+
+   // the ID of the next message
+   int idNext = 100;
 };
