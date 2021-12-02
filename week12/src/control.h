@@ -9,4 +9,6 @@
 
 #pragma once
 
-// you may need to put something here...
+struct Control {
+   PUBLIC, CONFIDENTIAL, PRIVILEGED, SECRET
+};
