@@ -15,7 +15,7 @@ SRCS_NO_MAIN := $(shell find $(SRC_DIR) -name '*.cpp' \
 	-not -path src/main.cpp \
 	-not -path src/combined.cpp \
 	-not -path src/scratch.cpp\
-	-not -path src/lab12.cpp)
+	-not -path src/ui.cpp)
 OBJS_NO_MAIN := $(SRCS_NO_MAIN:%=$(BUILD_DIR)/%.o)
 TEST_SRCS := $(shell find $(TEST_SRC_DIR) -name 'test-*.cpp')
 TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
