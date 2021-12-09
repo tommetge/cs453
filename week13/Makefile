@@ -10,7 +10,7 @@ SRCS := $(shell find $(SRC_DIR) -name '*.cpp' \
 	-not -path src/scratch.cpp)
 HDRS := $(shell find $(SRC_DIR) -name '*.hpp' -or -name '*.h')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
-DEPS := $(OBJ:%.o=%.d)
+DEPS := $(OBJS:%.o=%.d)
 SRCS_NO_MAIN := $(shell find $(SRC_DIR) -name '*.cpp' \
 	-not -path src/main.cpp \
 	-not -path src/combined.cpp \
@@ -24,13 +24,15 @@ INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -Ilib
 CPPFLAGS := $(INC_FLAGS) -std=c++17 -MMD -g # -Weverything
 
--include $(DEP)
+-include $(DEPS)
+
+.DEFAULT_GOAL := all
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CXX) $(CPPFLAGS) $(OBJS) -o $@
+	$(CXX) $(CPPFLAGS) -o $@ $^
 
 $(BUILD_DIR)/$(TARGET_TEST_EXEC): $(TEST_OBJS) $(OBJS_NO_MAIN)
-	$(CXX) $(CPPFLAGS) $(TEST_OBJS) $(OBJS_NO_MAIN) -o $@
+	$(CXX) $(CPPFLAGS) -o $@ $^
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
