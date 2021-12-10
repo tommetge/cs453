@@ -1,4 +1,4 @@
-TARGET_EXEC := week08
+TARGET_EXEC := $(shell basename $(CURDIR))
 TARGET_TEST_EXEC := test_runner
 
 BUILD_DIR := build
@@ -13,6 +13,7 @@ OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 SRCS_NO_MAIN := $(shell find $(SRC_DIR) -name '*.cpp' \
 	-not -path src/main.cpp \
 	-not -path src/combined.cpp \
+	-not -path src/bed.cpp \
 	-not -path src/scratch.cpp)
 OBJS_NO_MAIN := $(SRCS_NO_MAIN:%=$(BUILD_DIR)/%.o)
 TEST_SRCS := $(shell find $(TEST_SRC_DIR) -name 'test-*.cpp')
@@ -20,7 +21,7 @@ TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
 
 INC_DIRS := $(shell find $(SRC_DIR) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS)) -Ilib
-CPPFLAGS := $(INC_FLAGS) -std=c++11 -g # -fsanitize=address -mllvm -asan-stack=0
+CPPFLAGS := $(INC_FLAGS) -g -Weverything
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CXX) $(CPPFLAGS) $(OBJS) -o $@
@@ -61,6 +62,9 @@ $(BUILD_DIR)/scratch: $(BUILD_DIR)/scratch.cpp.o
 	$(CXX) -g $(BUILD_DIR)/scratch.cpp.o -o $@
 
 scratch : $(BUILD_DIR)/scratch
+
+analyze :
+	scan-build make
 
 .PHONY: clean
 clean :
