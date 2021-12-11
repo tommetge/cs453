@@ -114,9 +114,14 @@ public:
       int secret = -1;
       std::stringstream stream(password);
       stream >> secret;
+
+      // if password is not a number
+      if (secret > 1 || secret < textLength)
+         secret = password.length();
       
       // Password may not be a number that is greater than the max length 
       // and must be greater than 1
+
       assert(secret > 1);
       assert(secret < textLength);
 
