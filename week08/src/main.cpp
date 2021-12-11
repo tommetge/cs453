@@ -3,6 +3,14 @@
 
 using namespace std;
 
+<<<<<<< HEAD
+void safe() {
+   printf("Safe function\n");
+}
+
+void unsafe() {
+   printf("UNSAFE FUNCTION!!!!\n");
+=======
 /*************************************
  * ARRAY VULNERABILTY
  * 1. There must be an array and an array index variable
@@ -85,12 +93,33 @@ void arcSafeFunction() {
 
 void arcUnsafeFunction() {
    cout << "UNSAFE!!" << endl;
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
 /*************************************
  * ARC VULNERABILTY
- * ...
+ * 1. There must be a function pointer used in the code.
+ * 2. Through some vulnerability, there must be a way for user input 
+ *    to overwrite the function pointer. This typically happens through 
+ *    a stack buffer vulnerability.
+ * 3. After the memory is overwritten, the function pointer must 
+ *    be dereferenced.
  ****************************************/
+<<<<<<< HEAD
+// accept a buffer
+void arcVulnerability(const char * input)
+{
+   // set the function ptr to the safe function
+   void (* functionPtr)() = safe;
+   // set the buffer
+   char buffer[4] = {0};
+
+   // create vulnerability from the buffer by not checking the length of the input
+   memcpy(buffer, input, strlen(input));
+  
+   // call the now unsafe pointer
+   functionPtr();
+=======
 void arcVulnerability(const char *input)
 {
    // Setup our function pointer to arcSafeFunction()
@@ -105,6 +134,7 @@ void arcVulnerability(const char *input)
 
    // Execute our (hopefully) safe function
    pointerToSafe();
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
 /**************************************
@@ -114,8 +144,12 @@ void arcVulnerability(const char *input)
  *************************************/
 void arcWorking()
 {
+<<<<<<< HEAD
+   arcVulnerability("Home");
+=======
    cout << "Working: ";
    arcVulnerability("Hi\0\0");
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
 /**************************************
@@ -124,6 +158,23 @@ void arcWorking()
  *************************************/
 void arcExploit()
 {
+<<<<<<< HEAD
+
+   // create buffer
+   char bad[4 + sizeof(long *)] = {0};
+
+   // create function pointer that points to safe
+   bad[0] = 0xaa;
+   bad[1] = 0xaa;
+   bad[2] = 0xaa;
+   bad[3] = 0xaa;
+
+   // overflow the buffer to point to the unsafe function
+   void (* unsafePtr)() = unsafe;
+   memcpy(bad + 4, (long *)&unsafePtr, sizeof(long *));
+
+   arcVulnerability(bad);
+=======
    // Initialize our input with zeros, make it big enough to hold
    // the buffer size + function pointer.
    char maliciousInput[4 + sizeof(long *)] = { 0 };
@@ -363,17 +414,30 @@ void intOverflowExploit()
 {
    cout << "Exploit: ";
    intOverflowVulnerability(100);
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
 /*************************************
  * ANSII-UNICODE VULNERABILTY
- * ...
+ * 1. There must be a buffer where the basetype is greater than one.
+ * 2. Validation of the buffer must check the size of the buffer rather 
+      than the number of elements in the buffer.
  ****************************************/
+<<<<<<< HEAD
+void ansiiToUnicodeVulnerability(long * input)
+{
+   // Buffer that is vulnerable
+   long buffer[32];
+   // Not checking the number of elements and instead checking the size creates the vulnerability
+   memcpy(buffer, input, sizeof(buffer) * sizeof(short));
+   cout << buffer << endl;
+=======
 void ansiiToUnicodeVulnerability(short *input)
 {
    short buff[32];
    memcpy(buff, input, sizeof(buff) * sizeof(short));
    cout << buff << endl;
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
 /**************************************
@@ -383,8 +447,13 @@ void ansiiToUnicodeVulnerability(short *input)
  *************************************/
 void ansiiToUnicodeWorking()
 {
+<<<<<<< HEAD
+   long lng[4] = {0xaa, 0xaa, 0xaa, 0xaa};
+   ansiiToUnicodeVulnerability(lng);
+=======
    short msg[5] = { 0x53, 0x61, 0x66, 0x65, 0x21 };
    ansiiToUnicodeVulnerability(msg);
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
 /**************************************
@@ -393,19 +462,75 @@ void ansiiToUnicodeWorking()
  *************************************/
 void ansiiToUnicodeExploit()
 {
+<<<<<<< HEAD
+   // NOTE: This will cause the program to abort. To see the actual overflow use ASAN
+   long bad[64] = {};
+   ansiiToUnicodeVulnerability(bad);
+=======
    // Note: Running this with ASAN enabled will show the buffer
    // overflow. Running it as-is will abort.
    short msg[64] = {};
    ansiiToUnicodeVulnerability(msg);
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 }
 
-static const char *SectionBoundary = "********************\n";
+static const char *SectionBoundary = "********************";
 
 /**********************************************
  * MAIN : The main function.
  **********************************************/
 int main()
 {
+<<<<<<< HEAD
+   // cout << "Array Index" << endl;
+   // cout << SectionBoundary << endl;
+
+   // arrayVulnerability();
+   // arrayWorking();
+   // arrayExploit();
+
+   cout << "\nARC" << endl;
+   cout << SectionBoundary << endl;
+
+   // arcVulnerability();
+   arcWorking();
+   arcExploit();
+
+   // cout << "VTABLE" << endl;
+   // cout << SectionBoundary << endl;
+
+   // vtableVulnerability();
+   // vtableWorking();
+   // vtableExploit();
+
+   // cout << "Stack Smashing" << endl;
+   // cout << SectionBoundary << endl;
+
+   // stackVulnerability();
+   // stackWorking();
+   // stackExploit();
+
+   // cout << "Heap Spraying" << endl;
+   // cout << SectionBoundary << endl;
+
+   // heapVulnerability();
+   // heapWorking();
+   // heapExploit();
+
+   // cout << "Integer Overflow" << endl;
+   // cout << SectionBoundary << endl;
+
+   // intOverflowVulnerability();
+   // intOverflowWorking();
+   // intOverflowExploit();
+
+   cout << "\nANSI-UNICODE" << endl;
+   cout << SectionBoundary << endl;
+
+   // ansiiToUnicodeVulnerability();
+   ansiiToUnicodeWorking();
+   ansiiToUnicodeExploit();
+=======
    string input;
    cout << "Select exploit: " << endl;
    cout << "\t1: Array Index" << endl;
@@ -481,6 +606,7 @@ int main()
          cout << "Invalid selection";
          exit(-1);
    }
+>>>>>>> b78ba36534cf64f42d6da3798a205bbb6443297d
 
    return 0;
 }
