@@ -18,7 +18,9 @@ bool inline testGenerateQuery(const char *username, const char *password, const 
 
 TEST_CASE( "Union query attack test cases", "[union]" )
 {
-    REQUIRE( testGenerateQuery("tom", "nothing' UNION SELECT authenticate FROM passwordList", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = 'nothing' UNION SELECT authenticate FROM passwordList';") );
+    REQUIRE( testGenerateQuery("tom", "nothing' UNION SELECT authenticate FROM passwordList", "SELECT COUNT(*) FROM users WHERE username = 'tom' AND password = 'nothing' UNION SELECT authenticate FROM passwordList;") );
+
+    REQUIRE( testGenerateQuery("sam", "pwd' UNION SELECT authenticate FROM passwordList;", "SELECT COUNT(*) FROM users WHERE username = 'sam' AND password = 'pwd' UNION SELECT authenticate FROM passwordList;") );
 }
 
 TEST_CASE( "Union query attack with weak mitigation", "[union-weak]" )
