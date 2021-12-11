@@ -28,7 +28,7 @@ using namespace std;//namespace
 // I would like if this cipher has a name, because I would like to give it one: D
 
 //Declare global variables
-string alphabet = "0123456789abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXY.,:;~!¡¿?@#$%^&*()_+=-[]{}*\"\'|/Z";
+string alphabet = "0123456789abcdefghijklmnopqrstuvwxyz !.,\"@-_?=[]{}'/^&*+%~`#$|:<>ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /*********************************************************
  * CONVERT TEXT TO NUMBERS
